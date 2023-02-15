@@ -21,3 +21,5 @@ Route::post('/register', [UserController::class, 'register'])->name('user.regist
 Route::post('/login',[UserController::class, 'login'])->name('userlogin');
 
 Route::post('/logout', [UserController::class, 'logout']);
+
+Route::get('/search', [UserController::class, 'search'])->name('search');

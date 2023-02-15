@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Specialization;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -10,7 +11,12 @@ class UserController extends Controller
 {
     public function homepage(){
         if(auth()->check()){
-            return view('homepage-feed');
+
+            $specialists = Specialization::all();
+
+          //  $specialists = $specialists;
+
+            return view('homepage-feed', compact('specialists'));
 
         }else {
             return view('homepage');
@@ -56,6 +62,31 @@ class UserController extends Controller
     public function logout(){
         auth()->logout();
         return redirect('/')->with('success', 'You are now logged out.');
+
+    }
+
+    public function search(Request $request){
+
+      $specialistId = $request->query('specialist');
+      $q = $request->query('q');
+
+     $this->searchDoctor($specialistId, $q);
+
+    }
+
+    private function searchDoctor($specialistId, $name){
+
+        $doctors = Users::where('status', 'Active')
+            ->where('type', 'doctor')
+            ->where(function($q) use ($name) {
+                $q->where('first_name','LIKE', '%'.$name.'%')
+                    ->orWhere('last_name','LIKE', '%'.$name.'%');
+            })
+            ->get();
+
+        // inner join with link_specialization_doctors
+
+
 
     }
 
