@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class DoctorFactory extends Factory
+class UsersFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,10 +19,10 @@ class DoctorFactory extends Factory
         return [
                 'first_name' =>$this->faker->firstName,
                 'last_name' =>$this->faker->lastName,
-                'email'=>$this->faker->email->unique(),
+                'email'=>$this->faker->email,
                 'password' =>bcrypt($this->faker->password),
                 'gender' => $this->faker->randomElement(['Male','Female']),
-                'phone' => $this->faker->phoneNumber,
+                'phone_number' => $this->faker->phoneNumber,
                 'status' =>  $this->faker->randomElement(['Active','Inactive']),
                 'address' =>  $this->faker->address,
                 'type' => 'doctor',
