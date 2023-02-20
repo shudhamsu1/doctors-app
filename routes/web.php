@@ -23,3 +23,5 @@ Route::post('/login',[UserController::class, 'login'])->name('userlogin');
 Route::post('/logout', [UserController::class, 'logout']);
 
 Route::get('/search', [UserController::class, 'search'])->name('search');
+
+Route::post('/appointment', [UserController::class, 'appointment'])->name('create.appointment');

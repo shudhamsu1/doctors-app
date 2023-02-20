@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Specialization;
 use App\Models\Users;
+use Carbon\Carbon;
+use Doctrine\DBAL\Driver\AbstractPostgreSQLDriver;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -15,6 +18,7 @@ class UserController extends Controller
             $specialists = Specialization::all();
 
           //  $specialists = $specialists;
+          //  return view('homepage-feed', ['specialists'=>$specialists]);
 
             return view('homepage-feed', compact('specialists'));
 
@@ -70,13 +74,15 @@ class UserController extends Controller
       $specialistId = $request->query('specialist');
       $q = $request->query('q');
 
-     $this->searchDoctor($specialistId, $q);
+    $doctors = $this->searchDoctor($specialistId, $q);
+
+    return view('doctor_list', compact('doctors'));
 
     }
 
     private function searchDoctor($specialistId, $name){
 
-        $doctors = Users::where('status', 'Active')
+        return Users::where('status', 'Active')
             ->where('type', 'doctor')
             ->where(function($q) use ($name) {
                 $q->where('first_name','LIKE', '%'.$name.'%')
@@ -84,10 +90,41 @@ class UserController extends Controller
             })
             ->get();
 
-        // inner join with link_specialization_doctors
+    }
+
+    public function appointment(Request $request)
+    {
 
 
 
+        //validation
+
+        $from = $request->input('from');
+        $to = $request->input('to');
+
+        $a = Appointment::where('from', '<', $from)
+            ->where('to', '>', $to)
+            ->where('doctor_id', $request->input('doctor_id'))
+            ->where('user_id', $request->input('user_id'))
+            ->get();
+
+        if (!empty($a)) {
+
+            echo 'not available';
+        } else {
+
+            echo 'available';
+        }
+        exit;
+
+
+
+        Appointment::create([
+            'from' => $request->input('from'),
+            'to' => $request->input('to'),
+            'user_id' => $request->input('user_id'),
+            'doctor_id' => $request->input('doctor_id'),
+        ]);
     }
 
 }
